@@ -8,22 +8,21 @@ import './App.css';
 
 const particlesOptions = {
   particles: {
-    line_linked: {
-      shadow: {
+    number: {
+      value: 80,
+      density: {
         enable: true,
-        color: "#3CA9D1",
-        blur: 5
+        value_area: 800
       }
     }
   }
-}
+};
 
 function App() {
   return (
     <div className="App">
       <Particles className='particles'
-        parms={particlesOptions}
-      />
+        params={particlesOptions} />
       <Navigation />
       <Logo />
       <Rank />
