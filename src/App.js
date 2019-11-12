@@ -1,6 +1,7 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import Navigation from './components/Navigation/Navigation';
 import FaceRecognition from './components/FaceRecognition/FaceRecognition';
+import Signin from './components/Signin/Signin';
 import Logo from './components/Logo/Logo';
 import ImageLinkForm from './components/ImageLinkForm/ImageLinkForm';
 import Rank from './components/Rank/Rank';
@@ -32,6 +33,7 @@ class App extends Component {
       input: '',
       imageUrl: '',
       box: {},
+      route: 'signin'
     }
   }
 
@@ -50,7 +52,7 @@ class App extends Component {
 
   displayFaceBox = (box) => {
     console.log(box);
-    this.setState({ box: box  })
+    this.setState({ box: box })
   }
 
   onInputChange = (event) => {
@@ -67,17 +69,31 @@ class App extends Component {
       .catch(err => console.log(err));
   }
 
+  onRouteChange = (route) => {
+    this.setState({ route: route });
+  }
+
   render() {
     return (
       <div className="App">
         <Particles className='particles'
-          params={particlesOptions} />
-        <Navigation />
-        <Logo />
-        <Rank />
-        <ImageLinkForm onInputChange={this.onInputChange} onButtonSubmit={this.onButtonSubmit} />
-        <FaceRecognition box={this.state.box} imageUrl={this.state.imageUrl} />
+          params={particlesOptions}
+        />
+        <Navigation onRouteChange={this.onRouteChange} />
+        {this.state.route === 'signin'
+          ? <Signin onRouteChange={this.onRouteChange} />
+          : <Fragment>
+            <Logo />
+            <Rank />
+            <ImageLinkForm
+              onInputChange={this.onInputChange}
+              onButtonSubmit={this.onButtonSubmit}
+            />
+            <FaceRecognition box={this.state.box} imageUrl={this.state.imageUrl} />
+          </Fragment>
+        }
       </div>
+
     );
   }
 }
