@@ -38,11 +38,28 @@ class App extends Component {
       imageUrl: '',
       box: {},
       route: 'signin',
-      issignedIn: false
+      issignedIn: false,
+      user: {
+        id: '',
+        name: '',
+        email: '',
+        entries: 0,
+        joined: ''
+      }
     }
   }
 
-  
+  loadUser = (data) => {
+    this.setState({
+      user: {
+        id: data.id,
+        name: data.name,
+        email: data.email,
+        entries: data.entries,
+        joined: data.joined
+      }
+    });
+  }
 
   calculateFaceLocation = (data) => {
     const clarifaiFace = data.outputs[0].data.regions[0].region_info.bounding_box;
@@ -103,63 +120,34 @@ class App extends Component {
       route,
       box
     } = this.state;
-    return ( <
-        div className = "App" >
-        <
-        Particles className = 'particles'
-        params = {
-          particlesOptions
+    return (
+      <div className="App" >
+        <Particles className='particles'
+          params={particlesOptions}
+        />
+        <Navigation
+          isSignedIn={isSignedIn}
+          onRouteChange={this.onRouteChange}
+        />
+        {route === 'home' ?
+          <Fragment>
+            <Logo />
+            <Rank />
+            <ImageLinkForm
+              onInputChange={this.onInputChange}
+              onButtonSubmit={this.onButtonSubmit}
+            />
+            <FaceRecognition box={box} imageUrl={imageUrl} />
+          </Fragment>
+          : (
+            route === 'signin'
+              ? <Signin onRouteChange={this.onRouteChange} />
+              : <Register loadUser={this.loadUser} onRouteChange={this.onRouteChange} />
+          )
         }
-        /> <
-        Navigation isSignedIn = {
-          isSignedIn
-        }
-        onRouteChange = {
-          this.onRouteChange
-        }
-        /> {
-        route === 'home' ?
-        <
-        Fragment >
-        <
-        Logo / >
-        <
-        Rank / >
-        <
-        ImageLinkForm onInputChange = {
-          this.onInputChange
-        }
-        onButtonSubmit = {
-          this.onButtonSubmit
-        }
-        /> <
-        FaceRecognition box = {
-          box
-        }
-        imageUrl = {
-          imageUrl
-        }
-        /> < /
-        Fragment >
-
-        :
-        (
-          route === 'signin' ?
-          <
-          Signin onRouteChange = {
-            this.onRouteChange
-          }
-          /> : <
-          Register onRouteChange = {
-            this.onRouteChange
-          }
-          />
-        )
-      } <
-      /div>
-
-  );
-}
+      </div>
+    );
+  }
 }
 
 export default App;
