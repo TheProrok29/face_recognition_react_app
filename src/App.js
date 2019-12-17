@@ -1,36 +1,32 @@
-import React, {
-  Component,
-  Fragment
-} from 'react';
-import Navigation from './components/Navigation/Navigation';
+import React, { Component } from 'react';
+import Particles from 'react-particles-js';
 import FaceRecognition from './components/FaceRecognition/FaceRecognition';
+import Navigation from './components/Navigation/Navigation';
 import Signin from './components/Signin/Signin';
 import Register from './components/Register/Register';
 import Logo from './components/Logo/Logo';
 import ImageLinkForm from './components/ImageLinkForm/ImageLinkForm';
 import Rank from './components/Rank/Rank';
-import Particles from 'react-particles-js';
-
 import './App.css';
 
 const particlesOptions = {
   particles: {
     number: {
-      value: 80,
+      value: 50,
       density: {
         enable: true,
         value_area: 800
       }
     }
   }
-};
+}
 
 const initialState = {
   input: '',
   imageUrl: '',
   box: {},
   route: 'signin',
-  issignedIn: false,
+  isSignedIn: false,
   user: {
     id: '',
     name: '',
@@ -38,8 +34,8 @@ const initialState = {
     entries: 0,
     joined: ''
   }
-
 }
+
 class App extends Component {
   constructor() {
     super();
@@ -55,7 +51,7 @@ class App extends Component {
         entries: data.entries,
         joined: data.joined
       }
-    });
+    })
   }
 
   calculateFaceLocation = (data) => {
@@ -103,6 +99,7 @@ class App extends Component {
               this.setState(Object.assign(this.state.user, { entries: count }))
             })
             .catch(console.log)
+
         }
         this.displayFaceBox(this.calculateFaceLocation(response))
       })
@@ -111,45 +108,34 @@ class App extends Component {
 
   onRouteChange = (route) => {
     if (route === 'signout') {
-      this.setState({
-        isSignedIn: false
-      })
+      this.setState(initialState)
     } else if (route === 'home') {
-      this.setState({
-        isSignedIn: true
-      })
+      this.setState({ isSignedIn: true })
     }
-    this.setState({
-      route: route
-    });
+    this.setState({ route: route });
   }
 
   render() {
-    const {
-      isSignedIn,
-      imageUrl,
-      route,
-      box
-    } = this.state;
+    const { isSignedIn, imageUrl, route, box } = this.state;
     return (
-      <div className="App" >
+      <div className="App">
         <Particles className='particles'
           params={particlesOptions}
         />
-        <Navigation
-          isSignedIn={isSignedIn}
-          onRouteChange={this.onRouteChange}
-        />
-        {route === 'home' ?
-          <Fragment>
+        <Navigation isSignedIn={isSignedIn} onRouteChange={this.onRouteChange} />
+        {route === 'home'
+          ? <div>
             <Logo />
-            <Rank name={this.state.user.name} entries={this.state.user.entries} />
+            <Rank
+              name={this.state.user.name}
+              entries={this.state.user.entries}
+            />
             <ImageLinkForm
               onInputChange={this.onInputChange}
               onPictureSubmit={this.onPictureSubmit}
             />
             <FaceRecognition box={box} imageUrl={imageUrl} />
-          </Fragment>
+          </div>
           : (
             route === 'signin'
               ? <Signin loadUser={this.loadUser} onRouteChange={this.onRouteChange} />
